@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: sonarqube
+  labels:
+    app: sonarqube
 spec:
   replicas: 1
   selector:
@@ -12,22 +14,20 @@ spec:
       labels:
         app: sonarqube
     spec:
-      securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: ""  # Force pod on master node
       containers:
         - name: sonarqube
           image: sonarqube:9.9-community
           ports:
             - containerPort: 9000
           resources:
-            limits:
+            requests:
               memory: "1Gi"
               cpu: "500m"
-            requests:
-              memory: "512Mi"
-              cpu: "250m"
+            limits:
+              memory: "2Gi"
+              cpu: "1"
           volumeMounts:
             - name: sonarqube-temp
               mountPath: /opt/sonarqube/temp
@@ -40,10 +40,10 @@ kind: Service
 metadata:
   name: sonarqube-service
 spec:
-  type: NodePort
   selector:
     app: sonarqube
   ports:
-    - port: 9000
+    - protocol: TCP
+      port: 9000
       targetPort: 9000
-      nodePort: 31268
+  type: NodePort
