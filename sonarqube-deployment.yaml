@@ -15,7 +15,7 @@ spec:
         app: sonarqube
     spec:
       nodeSelector:
-        node-role.kubernetes.io/control-plane: ""
+        node-role.kubernetes.io/control-plane: ""   # Target the master node
       tolerations:
         - key: "node-role.kubernetes.io/control-plane"
           operator: "Exists"
