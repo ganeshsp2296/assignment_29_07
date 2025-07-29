@@ -2,12 +2,11 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven3'               // Make sure Maven3 is configured under Global Tools
-        sonarQubeScanner 'SonarScanner'  // Optional if using mvn plugin, but safe to add
+        maven 'Maven3' // Ensure Maven3 is configured under Jenkins > Global Tool Configuration
     }
 
     environment {
-        SONARQUBE = 'SonarQubeServer'  // Must match Jenkins > Configure System > SonarQube server name
+        SONARQUBE = 'SonarQubeServer' // Name must match Jenkins > Manage Jenkins > Configure System > SonarQube section
     }
 
     stages {
@@ -20,13 +19,11 @@ pipeline {
         stage('SonarQube Code Scan') {
             steps {
                 withSonarQubeEnv("${SONARQUBE}") {
-                    sh '''
+                    sh """
                         mvn clean verify sonar:sonar \
                         -Dsonar.projectKey=assignment-29-07 \
-                        -Dsonar.projectName=assignment-29-07 \
-                        -Dsonar.host.url=http://sonarqube-service:9000 \
-                        -Dsonar.login=admin
-                    '''
+                        -Dsonar.host.url=http://sonarqube-service:9000
+                    """
                 }
             }
         }
