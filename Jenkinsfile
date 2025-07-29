@@ -2,32 +2,33 @@ pipeline {
     agent any
 
     environment {
-        SONARQUBE_SERVER = 'SonarQube-K8s'  
+        SONARQUBE = 'SonarQubeServer'  
     }
 
     stages {
-        stage('Checkout') {
+        stage('Checkout Code') {
             steps {
                 git branch: 'ganesh.developer', url: 'https://github.com/ganeshsp2296/assignment_29_07.git'
             }
         }
 
-        stage('SonarQube Analysis') {
+        stage('SonarQube Code Scan') {
             steps {
-                withSonarQubeEnv("${SONARQUBE_SERVER}") {
-                    sh 'mvn clean verify sonar:sonar'
+                withSonarQubeEnv('SonarQubeServer') {
+                    sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=assignment-29-07 -Dsonar.host.url=http://sonarqube-service:9000 -Dsonar.login=admin'
                 }
             }
         }
 
-        stage('Build') {
-            when {
-                expression {
-                    return currentBuild.result == null || currentBuild.result == 'SUCCESS'
-                }
-            }
+        stage('Build Artifacts') {
             steps {
                 sh 'mvn clean package'
+            }
+        }
+
+        stage('Verify Artifact') {
+            steps {
+                sh 'ls -lh target/*.jar || echo "No artifact found!"'
             }
         }
     }
