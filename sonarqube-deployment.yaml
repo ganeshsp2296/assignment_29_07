@@ -12,6 +12,10 @@ spec:
       labels:
         app: sonarqube
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       containers:
         - name: sonarqube
           image: sonarqube:9.9-community
@@ -24,10 +28,6 @@ spec:
             requests:
               memory: "1Gi"
               cpu: "500m"
-          securityContext:
-            runAsUser: 1000
-            runAsGroup: 1000
-            fsGroup: 1000
           volumeMounts:
             - name: sonarqube-temp
               mountPath: /opt/sonarqube/temp
