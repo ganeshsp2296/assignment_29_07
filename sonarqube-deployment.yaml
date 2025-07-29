@@ -23,11 +23,11 @@ spec:
             - containerPort: 9000
           resources:
             limits:
-              memory: "2Gi"
-              cpu: "1000m"
-            requests:
               memory: "1Gi"
               cpu: "500m"
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
           volumeMounts:
             - name: sonarqube-temp
               mountPath: /opt/sonarqube/temp
